@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace用于指定当前文件和那个映射文件接口进行映射，需要指定文件的接口路径，需要标注包问完整路径-->
+<mapper namespace="com.cy.store.mapper.UserMapper">
+<!--    id 与对应接口方法对应，useGeneratedKeys开启某个字段自动递增，keyProperty指定递增的字段-->
+   <insert id="insert" useGeneratedKeys="true" keyProperty="uid" >
+       INSERT INTO t_user(username, password, salt, phone, email, gender, avatar, is_delete,created_user,created_time,modified_user,modified_time)VALUES(#{username}, #{password}, #{salt}, #{phone}, #{email}, #{gender}, #{avatar}, #{isDelete}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime}
+)
+   </insert>
+<!--    查询的结果可以是多个对象，可以是一个对象-->
+<!--  resultType表示结果查询集类型，只需要指定映射类的类型，并包含完整的接口，
+      resultMap 标签当表的资源和类的对象属性不一致时，来自定义查询结果集映射规则
+  -->
+<!--    通过用户名查询用户信息-->
+   <select id="findByUsername" resultMap="UserEntityMapper">
+       SELECT * FROM t_user WHERE username=#{username}
+   </select>
+<!--通过UID查询用户信息-->
+    <select id="findByUid" resultMap="UserEntityMapper">
+        SELECT * FROM t_user WHERE uid=#{uid}
+    </select>
+    <update id="updatePasswordByUid"  >
+        UPDATE t_user SET
+        password=#{password},
+        modified_user=#{modifiedUser},
+        modified_time=#{modifiedTime}
+        WHERE uid=#{uid}
+    </update>
+    <update id="updateInfoByUid"  >
+        UPDATE t_user SET
+        phone=#{phone},
+        email=#{email},
+        gender=#{gender},
+        modified_user=#{modifiedUser},
+        modified_time=#{modifiedTime}
+        WHERE uid=#{uid}
+    </update>
+<resultMap id="UserEntityMapper" type="com.cy.store.entity.User">
+<!--    将表和类字段不一致的匹配 名称一致的可以省略
+         column表用字段名
+         property类中属性名
+-->
+<!--    在映射定义规则下主键不能省略-->
+    <id column="uid" property="uid"/>
+  <result column="is_delete" property="isDelete"/>
+    <result column="created_user" property="createdUser"/>
+    <result column="created_time" property="createdTime"/>
+    <result column="modified_user" property="modifiedUser"/>
+    <result column="modified_time" property="modifiedTime"/>
+
+</resultMap>
+</mapper>
